@@ -50,8 +50,6 @@ def changeDNS(line, s_info, c_info, domain, sub_domain, cloud):
         line = "移动"
     elif line == "CU":
         line = "联通"
-    elif line == "CT":
-        line = "电信"
     else:
         print("CHANGE DNS ERROR: ----Time: " + str(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())) + "----MESSAGE: LINE ERROR")
         return
@@ -142,11 +140,7 @@ def main(cloud):
                                 info["recordId"] = record["id"]
                                 info["value"] = record["value"]
                                 cu_info.append(info)
-                            if record["line"] == "电信":
-                                info = {}
-                                info["recordId"] = record["id"]
-                                info["value"] = record["value"]
-                                ct_info.append(info)
+
                         for line in lines:
                             if line == "CM":
                                 changeDNS("CM", cm_info, temp_cf_cmips, domain, sub_domain, cloud)
