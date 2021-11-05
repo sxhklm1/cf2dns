@@ -50,6 +50,8 @@ def changeDNS(line, s_info, c_info, domain, sub_domain, cloud):
         line = "移动"
     elif line == "CU":
         line = "联通"
+    elif line == "CT":
+        line = "电信"
     else:
         print("CHANGE DNS ERROR: ----Time: " + str(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())) + "----MESSAGE: LINE ERROR")
         return
@@ -116,7 +118,7 @@ def main(cloud):
                         ret = cloud.get_record(domain, 20, sub_domain, "CNAME")
                         if ret["code"] == 0:
                             for record in ret["data"]["records"]:
-                                if record["line"] == "移动" or record["line"] == "联通":
+                                if record["line"] == "移动" or record["line"] == "联通" or record["line"] == "电信":
                                     retMsg = cloud.del_record(domain, record["id"])
                                     if(retMsg["code"] == 0):
                                         print("DELETE DNS SUCCESS: ----Time: "  + str(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())) + "----DOMAIN: " + domain + "----SUBDOMAIN: " + sub_domain + "----RECORDLINE: "+record["line"] )
@@ -140,13 +142,18 @@ def main(cloud):
                                 info["recordId"] = record["id"]
                                 info["value"] = record["value"]
                                 cu_info.append(info)
-
+                            if record["line"] == "电信":
+                                info = {}
+                                info["recordId"] = record["id"]
+                                info["value"] = record["value"]
+                                ct_info.append(info)
                         for line in lines:
                             if line == "CM":
                                 changeDNS("CM", cm_info, temp_cf_cmips, domain, sub_domain, cloud)
                             elif line == "CU":
                                 changeDNS("CU", cu_info, temp_cf_cuips, domain, sub_domain, cloud)
-
+                            elif line == "CT":
+                                changeDNS("CT", ct_info, temp_cf_ctips, domain, sub_domain, cloud)
         except Exception as e:
             print("CHANGE DNS ERROR: ----Time: " + str(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())) + "----MESSAGE: " + str(traceback.print_exc()))
 
